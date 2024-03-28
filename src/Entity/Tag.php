@@ -27,6 +27,9 @@ class Tag
     #[ORM\Column(length: 255)]
     private ?string $imageurl = null;
 
+    #[ORM\Column]
+    private ?TagType $type = null;
+
     public function __construct()
     {
         $this->supertag = new ArrayCollection();
@@ -57,6 +60,18 @@ class Tag
     public function setSubtags(?self $subtags): static
     {
         $this->subtags = $subtags;
+
+        return $this;
+    }
+
+    public function getType(): ?TagType
+    {
+        return $this->type;
+    }
+
+    public function setType(?TagType $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }
