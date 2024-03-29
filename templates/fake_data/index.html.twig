@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EventController!{% endblock %}
+
+{% block body %}
+
+    <h1>Users</h1>
+
+    <ul>
+        {% for user in users %}
+            <li>{{ user.firstname }} {{ user.lastname }} - {{ user.email }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Tags</h1>
+    <ul>
+        {% for tag in tags %}
+            <li>{{ tag.name }} - {{ tag.type.value }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Events</h1>
+    <ul>
+        {% for event in events %}
+            <li>{{ event.description }} - {{ event.startdate | date('Y-m-d') }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Encounters</h1>
+    <ul>
+        {% for encounter in encounters %}
+            <li> {{ encounter.firstteam.type.value }} {{ encounter.firstteam.name }}
+                vs {{ encounter.secondteam.type.value }} {{ encounter.secondteam.name }}
+                at {{ encounter.event.address }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
