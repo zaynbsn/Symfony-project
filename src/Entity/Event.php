@@ -22,6 +22,9 @@ class Event
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $startdate = null;
 
+    #[ORM\Column]
+    private ?LocationEnum $location = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $maximumcapacity = null;
 
