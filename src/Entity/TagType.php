@@ -14,5 +14,15 @@ enum TagType: string
 
     case Team = "team";
 
+    public static function values(): array
+    {
+        return [
+            self::GameType,
+            self::GameName,
+            self::Region,
+            self::Tournament,
+            self::Team,
+        ];
+    }
 }
 
