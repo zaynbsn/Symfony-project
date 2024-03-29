@@ -1,0 +1,83 @@
+{% block body %}
+    <header>
+        {# Your header here #}
+    </header>
+
+    <section class="max-w-3xl mx-auto py-8">
+        <h2 class="text-2xl font-semibold mb-4">Filters (tags)</h2>
+        {% set tagTypes = [] %}
+        {% for tag in tags %}
+            {% set tagType = tag.type %}
+            {% if tagType not in tagTypes %}
+                {% set tagTypes = tagTypes|merge([tagType]) %}
+            {% endif %}
+        {% endfor %}
+
+        {% for tagType in tagTypes %}
+            <div class="relative mb-4">
+                <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" id="tagFilterDropdown_{{ tagType.value }}" aria-haspopup="true" aria-expanded="false">
+                    {{ tagType.value }} Tags
+                    <!-- Heroicon name: solid/chevron-down -->
+                    <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+
+                <div class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5" aria-labelledby="tagFilterDropdown_{{ tagType.value }}" id="tagFilterDropdownMenu_{{ tagType.value }}">
+                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                        {% for tag in tags %}
+                            {% if tag.type == tagType %}
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" data-tag-id="{{ tag.name }}">{{ tag.name }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section id="eventList" class="max-w-3xl mx-auto py-8">
+        <h2 class="text-2xl font-semibold mb-4">List (Events)</h2>
+        <ul>
+            {% for event in events %}
+                <li class="mb-8">
+                    <h3 class="text-xl font-semibold mb-2">{{ event.description }}</h3>
+                    <p class="text-gray-600">Start Date: {{ event.startdate|date('Y-m-d H:i:s') }}</p>
+                    <p class="text-gray-600">Maximum Capacity: {{ event.maximumcapacity }}</p>
+                    <p class="text-gray-600">Address: {{ event.address }}</p>
+                    <p class="text-gray-600">Referent: {{ event.referent.username }}</p>
+
+                    <h4 class="text-lg font-semibold mt-4">Event Tags:</h4>
+                    <ul class="ml-4">
+                        {% for tag in event.getTags() %}
+                            <li class="text-gray-600">{{ tag.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h4 class="text-lg font-semibold mt-4">Encounters:</h4>
+                    <ul>
+                        {% for encounter in event.encounters %}
+                            <li>
+                                <p class="text-gray-600">First Team: {{ encounter.firstteam.name }}</p>
+                                <p class="text-gray-600">Second Team: {{ encounter.secondteam.name }}</p>
+                                <p class="text-gray-600">Tags:</p>
+                                <ul class="ml-4">
+                                    {% for tag in encounter.tags %}
+                                        <li class="text-gray-600">{{ tag.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    {# Display all tags associated with the event #}
+
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="max-w-3xl mx-auto py-8">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">CTA create (only referent)</button>
+    </section>
+
+{% endblock %}

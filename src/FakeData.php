@@ -71,13 +71,11 @@ class FakeData
                 ->setAddress(self::generateRandomAddress())
                 ->setReferent(self::users(1)[0]);
 
-            // Add encounters to the event
             foreach ($eventEncounters as $encounter) {
                 $event->addEncounter($encounter);
             }
 
-            // Add attendees to the event
-            $attendees = self::users(rand(5, 20)); // Generate random number of attendees
+            $attendees = self::users(rand(5, 20));
             foreach ($attendees as $attendee) {
                 $event->addAttendy($attendee);
             }
@@ -112,6 +110,13 @@ class FakeData
             $encounter->setFirstteam($firstTeamTag)
                 ->setSecondteam($secondTeamTag)
                 ->setEvent(self::events(1)[0]);
+
+
+            $numTags = rand(1, 10);
+            $tags = array_slice($teamTags, 0, $numTags);
+            foreach ($tags as $tag) {
+                $encounter->addTag($tag);
+            }
             $encounters[] = $encounter;
         }
 
@@ -163,4 +168,5 @@ class FakeData
 
         return rtrim($description);
     }
+
 }
