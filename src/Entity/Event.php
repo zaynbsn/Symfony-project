@@ -38,9 +38,13 @@ class Event
     #[ORM\OneToMany(targetEntity: Encounter::class, mappedBy: 'event')]
     private Collection $encounters;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
+    private Collection $attendies;
+
     public function __construct()
     {
         $this->encounters = new ArrayCollection();
+        $this->attendies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,6 +138,30 @@ class Event
                 $encounter->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getAttendies(): Collection
+    {
+        return $this->attendies;
+    }
+
+    public function addAttendy(User $attendy): static
+    {
+        if (!$this->attendies->contains($attendy)) {
+            $this->attendies->add($attendy);
+        }
+
+        return $this;
+    }
+
+    public function removeAttendy(User $attendy): static
+    {
+        $this->attendies->removeElement($attendy);
 
         return $this;
     }
