@@ -46,6 +46,7 @@ class Event
         $this->id = 1;
         $this->encounters = new ArrayCollection();
         $this->attendies = new ArrayCollection();
+
     }
 
     public function getId(): ?string
@@ -165,5 +166,27 @@ class Event
         $this->attendies->removeElement($attendy);
 
         return $this;
+    }
+
+    public function getTags(): Collection
+    {
+        // Création d'une nouvelle collection pour stocker tous les tags uniques
+        $allTags = new ArrayCollection();
+
+        // Parcours de tous les encounters
+        foreach ($this->encounters as $encounter) {
+            // Récupération des tags de l'encounter
+            $encounterTags = $encounter->getTags();
+
+            // Ajout des tags de l'encounter à la collection de tous les tags
+            foreach ($encounterTags as $tag) {
+                // Vérification pour éviter les doublons
+                if (!$allTags->contains($tag)) {
+                    $allTags->add($tag);
+                }
+            }
+        }
+
+        return $allTags;
     }
 }
