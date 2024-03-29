@@ -46,6 +46,8 @@ class FakeData
     public static function events($count = 5)
     {
         $events = [];
+        $encounters = self::encounters($count); // Generate encounters for each event
+
         for ($i = 1; $i <= $count; $i++) {
             $event = new Event();
             $startDate = new \DateTime();
@@ -53,11 +55,33 @@ class FakeData
 
             $description = self::generateRandomDescription();
 
-            $event->setDescription($description)
+            // Filter encounters for this event only if encounters are available
+            if (!empty($encounters)) {
+                $eventEncounters = array_filter($encounters, function ($encounter) {
+                    return $encounter->getEvent();
+                });
+            } else {
+                $eventEncounters = [];
+            }
+
+            $event
+                ->setDescription($description)
                 ->setStartdate($startDate)
                 ->setMaximumcapacity(rand(10, 100))
-                ->setAddress(self::generateRandomAddress()); // Generate random address
-            $event->setReferent(self::users(1)[0]);
+                ->setAddress(self::generateRandomAddress())
+                ->setReferent(self::users(1)[0]);
+
+            // Add encounters to the event
+            foreach ($eventEncounters as $encounter) {
+                $event->addEncounter($encounter);
+            }
+
+            // Add attendees to the event
+            $attendees = self::users(rand(5, 20)); // Generate random number of attendees
+            foreach ($attendees as $attendee) {
+                $event->addAttendy($attendee);
+            }
+
             $events[] = $event;
         }
         return $events;
@@ -67,24 +91,32 @@ class FakeData
     public static function encounters($count = 20)
     {
         $encounters = [];
-        $teamTags = array_filter(self::tags(), function($tag) {
+        $teamTags = array_filter(self::tags(), function ($tag) {
             return $tag->getType() === TagType::Team;
         });
 
-        $teamTags = array_values($teamTags);
+        if (empty($teamTags)) {
+            // Handle the case when there are no team tags available
+            // You may throw an exception, log an error, or take appropriate action
+            return $encounters;
+        }
 
+        // Shuffle the team tags to ensure randomness
+        shuffle($teamTags);
+
+        // Select random team tags for encounters
         for ($i = 0; $i < $count; $i++) {
-            $encounter = new Encounter();
             $firstTeamTag = $teamTags[array_rand($teamTags)];
             $secondTeamTag = $teamTags[array_rand($teamTags)];
+            $encounter = new Encounter();
             $encounter->setFirstteam($firstTeamTag)
-                ->setSecondteam($secondTeamTag);
-            $encounter->setEvent(self::events(1)[0]);
+                ->setSecondteam($secondTeamTag)
+                ->setEvent(self::events(1)[0]);
             $encounters[] = $encounter;
         }
+
         return $encounters;
     }
-
 
 
     private static function generateRandomAddress()
