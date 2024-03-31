@@ -18,7 +18,7 @@ public function index(EntityManagerInterface $entityManager): Response
 //$users = $fakeData->users();
 //$tags = $fakeData->tags();
 //$events = $fakeData->events();
-//$encounters = $fakeData->encounters();
+//$encounters = $fakeData->encounters(10);
 
 return $this->render('fake_data/index.html.twig', [
 'users' => $users,

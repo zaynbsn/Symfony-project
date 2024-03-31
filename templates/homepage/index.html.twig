@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-2xl font-bold mb-4 text-blue-800">Catégories</h1>
-    <form action="{{ path('homepage') }}" method="get">
+    <h1 class="text-2xl font-bold mb-4 text-blue-800">Catégories 🎨</h1>
+    <form action="{{ path('homepage') }}" method="get" class="mb-8">
         <ul>
             {% for category, tagsOfType in tags %}
-                <li class="mb-4">
+                <li class="mb-4  inline-block">
                     <h2 class="text-lg font-semibold mb-2">{{ category }}</h2>
-                    <select name="{{ category }}" class="block border border-gray-300 rounded p-2">
+                    <select name="{{ category }}"
+                            class="block border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500">
                         <option value=""
                                 disabled{% if not selectedTags is defined or not selectedTags[category] is defined %} selected{% endif %}>
                             Choisir {{ category }}</option>
@@ -26,57 +27,43 @@
                 </li>
             {% endfor %}
         </ul>
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
-            Chercher
+        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
+            Chercher 🔍
         </button>
         <button type="button" onclick="resetForm()"
-                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mt-4 ml-2">Reset
+                class="bg-red-300 hover:bg-red-400 text-white font-bold py-2 px-4 rounded">Réinitialiser ↺
         </button>
     </form>
     {% if is_granted('ROLE_REFERENT') %}
         <a href="{{ path('app_event_new') }}"
-           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">Créer un événement</a>
+           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-8 inline-block">Créer un
+            événement 🎉</a>
     {% endif %}
-    <h1 class="text-2xl font-bold my-8 text-blue-800">Liste des Événements</h1>
+    <h1 class="text-2xl font-bold my-8 text-blue-800">Liste des Événements 📅</h1>
     <ul>
         {% for event in events %}
-            <li class="mb-8">
-                <div class="border rounded p-4 bg-white shadow-md">
-                    <h2 class="text-xl font-bold mb-4 text-blue-900">{{ event.description }}</h2>
-                    <p>Start Date: {{ event.startdate|date('Y-m-d H:i:s') }}</p>
-                    <p>Location: {{ event.location.value }}</p>
-                    <p>Maximum Capacity: {{ event.maximumcapacity }}</p>
-                    <p>Address: {{ event.address }}</p>
-                    <p>Referent: {{ event.referent.username }}</p>
-                    <p>Tags:
-                        {% for tag in event.tags %}
-                            {{ tag.name }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
-                    <a href="{{ path('app_event_show', {'id': event.id}) }}"
-                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Voir</a>
-
-                    {% if is_granted('ROLE_REFERENT') and event.referent == app.user %}
-                        <a href="{{ path('app_event_edit', {'id': event.id}) }}"
-                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Modifier</a>
-                    {% endif %}
-
-                </div>
-
-            </li>
+            {% include 'component/event_content.html.twig' with {'event': event} %}
         {% endfor %}
     </ul>
 
     <script>
         function resetForm() {
-            // Reset all dropdowns to their initial state
+            // Réinitialiser tous les menus déroulants à leur état initial
             var selects = document.querySelectorAll('select');
             selects.forEach(function (select) {
                 select.selectedIndex = 0;
             });
 
-            // Alternatively, you can reset the entire form
-            // document.querySelector('form').reset();
+            // Supprimer tous les paramètres de l'URL
+            var url = new URL(window.location.href);
+            var params = new URLSearchParams(url.search);
+            params.forEach(function (value, key) {
+                params.delete(key);
+            });
+
+            // Rediriger vers la nouvelle URL sans les paramètres
+            window.location.href = url.origin + url.pathname;
         }
     </script>
+
 {% endblock %}

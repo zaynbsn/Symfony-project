@@ -146,7 +146,6 @@ class Event
     public function removeEncounter(Encounter $encounter): static
     {
         if ($this->encounters->removeElement($encounter)) {
-            // set the owning side to null (unless already changed)
             if ($encounter->getEvent() === $this) {
                 $encounter->setEvent(null);
             }
@@ -193,16 +192,4 @@ class Event
 
         return $tags;
     }
-    public function getLocation(): ?LocationEnum
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?LocationEnum $location): static
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
 }

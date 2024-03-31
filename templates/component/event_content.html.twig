@@ -1,0 +1,27 @@
+<!-- event_content.html.twig -->
+<div class="border rounded p-4 bg-white shadow-md">
+    <h2 class="text-xl font-bold mb-4 text-blue-900">{{ event.description }}</h2>
+    <p>Date de début : {{ event.startdate|date('Y-m-d H:i:s') }}</p>
+    <p>Lieu : {{ event.location.value }}</p>
+    <p>Capacité maximale : {{ event.maximumcapacity }}</p>
+    <p>Adresse : {{ event.address }}</p>
+    <p>Référent : {{ event.referent.username }}</p>
+    <p>Rencontres : {% for encounter in event.encounters %}
+            {{ encounter.description }}{% if not loop.last %}, {% endif %}
+        {% endfor %}</p>
+    <p>Tags :
+        {% for tag in event.tags %}
+            {{ tag.name }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <a href="{{ path('app_event_show', {'id': event.id}) }}"
+       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2 inline-block">Voir
+        🎬</a>
+
+    {% if is_granted('ROLE_REFERENT') and event.referent == app.user %}
+        <a href="{{ path('app_event_edit', {'id': event.id}) }}"
+           class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-block">Modifier
+            🖊️</a>
+    {% endif %}
+
+</div>

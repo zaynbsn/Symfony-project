@@ -47,6 +47,7 @@ class EventType extends AbstractType
                 'choice_label' => 'description',
                 'multiple' => true,
                 'expanded' => true,
+                'by_reference' => false, // Ensure that changes in encounters are detected
             ])
             ->add('attendies', EntityType::class, [
                 'class' => User::class,

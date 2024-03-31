@@ -14,10 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-    public function index(Request $request): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        $events = FakeData::events(2);
+        $eventsRepository = $entityManager->getRepository(Event::class);
+        $events = $eventsRepository->findAll();
 
         return $this->render('profile/index.html.twig', [
             'user' => $user,
