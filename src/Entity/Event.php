@@ -43,7 +43,7 @@ class Event
 
     public function __construct()
     {
-        $this->id = 1;
+        $this->id = uniqid();
         $this->encounters = new ArrayCollection();
         $this->attendies = new ArrayCollection();
 
@@ -170,23 +170,28 @@ class Event
 
     public function getTags(): Collection
     {
-        // Création d'une nouvelle collection pour stocker tous les tags uniques
-        $allTags = new ArrayCollection();
+        $tags = new ArrayCollection();
 
-        // Parcours de tous les encounters
-        foreach ($this->encounters as $encounter) {
-            // Récupération des tags de l'encounter
-            $encounterTags = $encounter->getTags();
-
-            // Ajout des tags de l'encounter à la collection de tous les tags
-            foreach ($encounterTags as $tag) {
-                // Vérification pour éviter les doublons
-                if (!$allTags->contains($tag)) {
-                    $allTags->add($tag);
+        foreach ($this->getEncounters() as $encounter) {
+            foreach ($encounter->getTags() as $tag) {
+                if (!$tags->contains($tag)) {
+                    $tags->add($tag);
                 }
             }
         }
 
-        return $allTags;
+        return $tags;
     }
+    public function getLocation(): ?LocationEnum
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?LocationEnum $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
 }

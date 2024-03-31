@@ -27,7 +27,7 @@ class Encounter
     private Collection $tags;
 
     #[ORM\ManyToOne(inversedBy: 'encounters')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Event $event = null;
 
     public function __construct()
