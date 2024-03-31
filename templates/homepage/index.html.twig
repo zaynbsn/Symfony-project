@@ -8,7 +8,9 @@
                 <li class="mb-4">
                     <h2 class="text-lg font-semibold mb-2">{{ category }}</h2>
                     <select name="{{ category }}" class="block border border-gray-300 rounded p-2">
-                        <option value="" disabled{% if not selectedTags is defined or not selectedTags[category] is defined %} selected{% endif %}>Choisir {{ category }}</option>
+                        <option value=""
+                                disabled{% if not selectedTags is defined or not selectedTags[category] is defined %} selected{% endif %}>
+                            Choisir {{ category }}</option>
                         {% for tag in tagsOfType %}
                             {% if selectedTags is defined and selectedTags[category] is defined %}
                                 {% if selectedTags[category] == tag.id %}
@@ -24,10 +26,17 @@
                 </li>
             {% endfor %}
         </ul>
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Chercher</button>
-        <button type="button" onclick="resetForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mt-4 ml-2">Reset</button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
+            Chercher
+        </button>
+        <button type="button" onclick="resetForm()"
+                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mt-4 ml-2">Reset
+        </button>
     </form>
-
+    {% if is_granted('ROLE_REFERENT') %}
+        <a href="{{ path('app_event_new') }}"
+           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">Créer un événement</a>
+    {% endif %}
     <h1 class="text-2xl font-bold my-8 text-blue-800">Liste des Événements</h1>
     <ul>
         {% for event in events %}
@@ -44,7 +53,16 @@
                             {{ tag.name }}{% if not loop.last %}, {% endif %}
                         {% endfor %}
                     </p>
+                    <a href="{{ path('app_event_show', {'id': event.id}) }}"
+                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Voir</a>
+
+                    {% if is_granted('ROLE_REFERENT') and event.referent == app.user %}
+                        <a href="{{ path('app_event_edit', {'id': event.id}) }}"
+                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Modifier</a>
+                    {% endif %}
+
                 </div>
+
             </li>
         {% endfor %}
     </ul>
@@ -53,7 +71,7 @@
         function resetForm() {
             // Reset all dropdowns to their initial state
             var selects = document.querySelectorAll('select');
-            selects.forEach(function(select) {
+            selects.forEach(function (select) {
                 select.selectedIndex = 0;
             });
 

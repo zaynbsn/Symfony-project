@@ -6,6 +6,7 @@ use App\Repository\EncounterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 #[ORM\Entity(repositoryClass: EncounterRepository::class)]
 class Encounter
@@ -26,13 +27,19 @@ class Encounter
     #[ORM\ManyToMany(targetEntity: Tag::class)]
     private Collection $tags;
 
+
+    #[ORM\Column(nullable: true)]
+    private ?string $description = null;
+
     #[ORM\ManyToOne(inversedBy: 'encounters')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Event $event = null;
 
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->description = '';
     }
 
     public function getId(): ?int
@@ -88,6 +95,13 @@ class Encounter
         return $this;
     }
 
+
+    private function computeDescription(): void
+    {
+        if ($this->firstteam && $this->secondteam) {
+            $this->description = $this->firstteam->getName() . ' vs ' . $this->secondteam->getName();
+        }
+    }
     public function getEvent(): ?Event
     {
         return $this->event;
@@ -99,4 +113,18 @@ class Encounter
 
         return $this;
     }
+    public function getDescription(): ?string
+    {
+        if ($this->firstteam && $this->secondteam) {
+            return $this->firstteam->getName() . ' vs ' . $this->secondteam->getName();
+        }
+        return null;
+    }
+    #[ORM\PostPersist]
+    public function postPersistHandler(LifecycleEventArgs $args): void
+    {
+        $this->computeDescription();
+    }
+
+
 }

@@ -21,4 +21,6 @@ enum LocationEnum: string
             self::Lille,
         ];
     }
+
+
 }

@@ -14,7 +14,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?string $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
@@ -43,13 +43,12 @@ class Event
 
     public function __construct()
     {
-        $this->id = uniqid();
         $this->encounters = new ArrayCollection();
         $this->attendies = new ArrayCollection();
 
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
