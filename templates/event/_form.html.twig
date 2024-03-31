@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+<div class="mb-4">
+    {{ form_label(form.description, null, {'class': 'block text-gray-700 text-sm font-bold mb-2'}) }}
+    {{ form_widget(form.description, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+</div>
+<div class="mb-4">
+    {{ form_label(form.startdate, null, {'class': 'block text-gray-700 text-sm font-bold mb-2'}) }}
+    {{ form_widget(form.startdate, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+</div>
+<div class="mb-4">
+    {{ form_label(form.location, null, {'class': 'block text-gray-700 text-sm font-bold mb-2'}) }}
+    {{ form_widget(form.location, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+</div>
+<div class="mb-4">
+    {{ form_label(form.maximumcapacity, null, {'class': 'block text-gray-700 text-sm font-bold mb-2'}) }}
+    {{ form_widget(form.maximumcapacity, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+</div>
+<div class="mb-4">
+    {{ form_label(form.address, null, {'class': 'block text-gray-700 text-sm font-bold mb-2'}) }}
+    {{ form_widget(form.address, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+</div>
+<div class="mb-4">
+    {{ form_label(form.encounters, 'Encounters', {'class': 'block text-gray-700 text-sm font-bold mb-2'}) }}
+    {{ form_widget(form.encounters, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+</div>
+<div class="mb-4">
+    {{ form_label(form.attendies, null, {'class': 'block text-gray-700 text-sm font-bold mb-2'}) }}
+    {{ form_widget(form.attendies, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+</div>
+
+
+<button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+{{ form_end(form) }}

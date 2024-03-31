@@ -1,58 +1,94 @@
 <?php
 
 namespace App\Controller;
+
+use AllowDynamicProperties;
 use App\Entity\Event;
-use App\FakeData;
+use App\Entity\User;
+use App\Form\EventType;
+use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[AllowDynamicProperties] #[Route('/event')]
 class EventController extends AbstractController
 {
-    #[Route('/event', name: 'event_list')]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
-    {
-//        $events = $entityManager->getRepository(Event::class)->findAll();
-        $events = FakeData::events(10);
-        return $this->render('event/index.html.twig', [
-            'events' => $events,
-        ]);
-    }
-    #[Route('/event/{id}', name: 'single_event')]
-    public function show($id, EntityManagerInterface $entityManager): Response
-    {
-        // Fetch the event entity based on the provided ID
-        $event = $this->getFakeEventById($id);
 
-        // Check if the event exists
-        if (!$event) {
-            throw $this->createNotFoundException('Event not found');
+    public function __construct(Security $security, EntityManagerInterface $entityManager)
+    {
+
+        $eventRepository = $entityManager->getRepository(Event::class);
+        $this->security = $security;
+    }
+
+    #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $event = new Event();
+
+
+        $userRepository = $entityManager->getRepository(User::class);
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $currentUser = $this->security->getUser();
+            $user = $userRepository->find($currentUser->getId());
+            $event->setReferent($user);
+            $entityManager->persist($event);
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('homepage');
         }
 
-        // Render the template with the event data
-        return $this->render('event/single.html.twig', [
+
+        return $this->render('event/new.html.twig', [
+            'event' => $event,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+    #[Route('/{id}', name: 'app_event_show', methods: ['GET'])]
+    public function show(Event $event): Response
+    {
+        return $this->render('event/show.html.twig', [
             'event' => $event,
         ]);
     }
 
-
-    private function getFakeEventById($id)
+    #[Route('/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        // Fetch all fake events
-        $fakeEvents = FakeData::events();
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
 
-        // Iterate through fake events to find the one with the matching ID
-        foreach ($fakeEvents as $fakeEvent) {
-            if ($fakeEvent->getId() == $id) {
-                return $fakeEvent;
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('homepage', [], Response::HTTP_SEE_OTHER);
         }
 
-        // Return null if no event with the given ID is found
-        return null;
+        return $this->render('event/edit.html.twig', [
+            'event' => $event,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_event_delete', methods: ['POST'])]
+    public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($event);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('homepage', [], Response::HTTP_SEE_OTHER);
     }
 }
-
-

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}📺 Viewing Party Details 🍿{% endblock %}
+
+{% block body %}
+    <h1 class="text-3xl font-bold mb-4">Welcome to the Viewing Party! 🎉</h1>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <p class="text-gray-600"><strong>ID:</strong></p>
+                <p class="font-semibold text-blue-700">{{ event.id }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600"><strong>Description:</strong></p>
+                <p class="font-semibold">{{ event.description }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600"><strong>Start Date:</strong></p>
+                <p class="font-semibold">{{ event.startdate ? event.startdate|date('Y-m-d H:i:s') : 'Happening Right Now!' }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600"><strong>Location:</strong></p>
+                <p class="font-semibold">{{ event.location.value }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600"><strong>Maximum Capacity:</strong></p>
+                <p class="font-semibold">{{ event.maximumcapacity }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600"><strong>Address:</strong></p>
+                <p class="font-semibold">{{ event.address }}</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="flex space-x-4 mb-4">
+        <a href="{{ path('homepage') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Party List 📺</a>
+
+        <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit Party Details 🍿</a>
+
+        {{ include('event/_delete_form.html.twig') }}
+    </div>
+
+{% endblock %}

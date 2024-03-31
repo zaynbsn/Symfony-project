@@ -21,6 +21,18 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    public function findByTag(int $tagId): array
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.encounters', 'encounter')
+            ->leftJoin('encounter.tags', 'tag')
+            ->andWhere('tag.id = :tagId')
+            ->setParameter('tagId', $tagId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */

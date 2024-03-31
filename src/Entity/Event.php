@@ -14,7 +14,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?string $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
@@ -43,12 +43,12 @@ class Event
 
     public function __construct()
     {
-        $this->id = 1;
         $this->encounters = new ArrayCollection();
         $this->attendies = new ArrayCollection();
+
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -73,6 +73,18 @@ class Event
     public function setStartdate(\DateTimeInterface $startdate): static
     {
         $this->startdate = $startdate;
+
+        return $this;
+    }
+
+    public function getLocation(): ?LocationEnum
+    {
+        return $this->location;
+    }
+
+    public function setLocation(LocationEnum $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }
@@ -134,7 +146,6 @@ class Event
     public function removeEncounter(Encounter $encounter): static
     {
         if ($this->encounters->removeElement($encounter)) {
-            // set the owning side to null (unless already changed)
             if ($encounter->getEvent() === $this) {
                 $encounter->setEvent(null);
             }
@@ -165,5 +176,20 @@ class Event
         $this->attendies->removeElement($attendy);
 
         return $this;
+    }
+
+    public function getTags(): Collection
+    {
+        $tags = new ArrayCollection();
+
+        foreach ($this->getEncounters() as $encounter) {
+            foreach ($encounter->getTags() as $tag) {
+                if (!$tags->contains($tag)) {
+                    $tags->add($tag);
+                }
+            }
+        }
+
+        return $tags;
     }
 }

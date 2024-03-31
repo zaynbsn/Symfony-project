@@ -24,5 +24,23 @@ enum TagType: string
             self::Team,
         ];
     }
+    public static function getName(self $type): string
+    {
+        switch ($type) {
+            case self::GameType:
+                return 'Game Type';
+            case self::GameName:
+                return 'Game Name';
+            case self::Region:
+                return 'Region';
+            case self::Tournament:
+                return 'Tournament';
+            case self::Team:
+                return 'Team';
+            default:
+                return '';
+        }
+    }
+
 }
 
