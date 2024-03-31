@@ -77,6 +77,18 @@ class Event
         return $this;
     }
 
+    public function getLocation(): ?LocationEnum
+    {
+        return $this->location;
+    }
+
+    public function setLocation(LocationEnum $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
     public function getMaximumcapacity(): ?int
     {
         return $this->maximumcapacity;

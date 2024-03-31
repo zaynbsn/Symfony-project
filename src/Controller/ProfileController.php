@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\User;
+use App\FakeData;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,9 +17,11 @@ class ProfileController extends AbstractController
     public function index(Request $request): Response
     {
         $user = $this->getUser();
+        $events = FakeData::events(2);
 
         return $this->render('profile/index.html.twig', [
             'user' => $user,
+            'events' => $events
         ]);
     }
 
@@ -27,6 +31,10 @@ class ProfileController extends AbstractController
         $repository = $entityManager->getRepository(User::class);
         $user = $repository->find($id);
 
+        var_dump($user->getRoles());
+
+        $events = FakeData::events(2);
+
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
@@ -34,6 +42,7 @@ class ProfileController extends AbstractController
         // Render the profile template with user data
         return $this->render('profile/index.html.twig', [
             'user' => $user,
+            'events' => $events
         ]);
     }
 }
